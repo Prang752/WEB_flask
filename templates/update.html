@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Sign up</h1>
+<h1>Edit</h1>
 <form method="POST">
     <label for="title">title</label>
     <input type="text" name="title" value={{post.title}}>
     <label for="body">contens</label>
     <input type="text" name="body" value={{post.body}}>
-    <input type="submit" value="Sign up">
+    <input type="submit" value="update">
 </form>
 {% endblock %}
