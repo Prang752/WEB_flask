@@ -1,15 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>BlogAppliction</h1>
-<a href="/create" role="button">Sing up</a>
-<article>
-    <h2>Article1</h2>
-    <p>Created date : 10/02/2025 22:00</p>
-    <p>This is the content of Article1</p>
-</article>
-<article>
-    <h2>Article2</h2>
-    <p>Created date : 15/02/2025 07:00</p>
-    <p>This is the content of Article2</p>
-</article>
+    <h1>BlogAppliction</h1>
+    <a href="/create" role="button">Sing up</a>
+    {% for post in posts %}
+    <article>
+        <h2>{{ post.title }}</h2>
+        <p>Created date : {{ post.created_at }}</p>
+        <p>{{ post.body }}</p>
+    </article>
+    {% endfor %}
 {% endblock %}
