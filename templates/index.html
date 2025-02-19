@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>BlogAppliction</h1>
-    <a href="/create" role="button">Sing up</a>
+    <a href="/create" role="button">New post</a>
     {% for post in posts %}
     <article>
         <h2>{{ post.title }}</h2>
