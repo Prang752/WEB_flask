@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
 
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -26,10 +26,15 @@ class Post(db.Model):
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), nullable=False, unique=True)
-    password = db.Column(db.String(12))
+    username = db.Column(db.String(30), unique=True)
+    password = db.Column(db.String(12), nullable=False)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route("/", methods=['GET', 'POST'])
+@login_required
 def index():
     if request.method == 'GET':
         posts = Post.query.all()
@@ -42,13 +47,13 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = User(username=username, password=generate_password_hash(password, method='sha256'))
+        user = User(username=username, password=generate_password_hash(password, method='pbkdf2:sha256', salt_length=8))
 
         db.session.add(user)
         db.session.commit()
         return redirect('/login')
     else:
-        return render_template('create.html')
+        return render_template('signup.html')
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -62,10 +67,17 @@ def login():
             return redirect('/')
     else:
         return render_template('login.html')
-     
 
 
-@app.route("/create", methods=['GET', 'POST'])
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/login')
+
+
+@app.route('/create', methods=['GET', 'POST'])
+@login_required
 def create():
     if request.method == 'POST':
         title = request.form.get('title')
@@ -82,6 +94,7 @@ def create():
 
 
 @app.route("/<int:id>/update", methods=['GET', 'POST'])
+@login_required
 def update(id):
     post = Post.query.get(id)
 
@@ -97,6 +110,7 @@ def update(id):
 
 
 @app.route("/<int:id>/delete", methods=['GET'])
+@login_required
 def delete(id):
     post = Post.query.get(id)
 
