@@ -33,7 +33,7 @@ class User(UserMixin, db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
     if request.method == 'GET':
@@ -41,7 +41,7 @@ def index():
         return render_template('index.html', posts=posts)
 
 
-@app.route("/signup", methods=['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -55,7 +55,7 @@ def signup():
     else:
         return render_template('signup.html')
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -93,7 +93,7 @@ def create():
 
 
 
-@app.route("/<int:id>/update", methods=['GET', 'POST'])
+@app.route('/<int:id>/update', methods=['GET', 'POST'])
 @login_required
 def update(id):
     post = Post.query.get(id)
@@ -109,7 +109,7 @@ def update(id):
         return redirect('/')
 
 
-@app.route("/<int:id>/delete", methods=['GET'])
+@app.route('/<int:id>/delete', methods=['GET'])
 @login_required
 def delete(id):
     post = Post.query.get(id)
