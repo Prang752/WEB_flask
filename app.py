@@ -2,6 +2,7 @@ from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
+from flask_bootstrap import Bootstrap
 
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
@@ -14,6 +15,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
+bootstrap = Bootstrap(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -26,12 +28,12 @@ class Post(db.Model):
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(30), unique=True)
-    password = db.Column(db.String(12), nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(int(user_id)) or None
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -47,11 +49,20 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = User(username=username, password=generate_password_hash(password, method='pbkdf2:sha256', salt_length=8))
+        # user = User(username=username, password=generate_password_hash(password, method='pbkdf2:sha256', salt_length=8))
+
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return "Error: Username already exists!", 400 
+
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
+        user = User(username=username, password=hashed_password)
+
 
         db.session.add(user)
         db.session.commit()
         return redirect('/login')
+
     else:
         return render_template('signup.html')
 
@@ -62,9 +73,13 @@ def login():
         password = request.form.get('password')
 
         user = User.query.filter_by(username=username).first()
-        if check_password_hash(user.password, password):
-            login_user(user)
-            return redirect('/')
+
+        if user is None or not check_password_hash(user.password, password):
+            return "Invalid username or password!", 400 
+
+        # if check_password_hash(user.password, password):
+        login_user(user)
+        return redirect('/')
     else:
         return render_template('login.html')
 
@@ -109,10 +124,10 @@ def update(id):
         return redirect('/')
 
 
-@app.route('/<int:id>/delete', methods=['GET'])
+@app.route('/<int:id>/delete', methods=['POST'])
 @login_required
 def delete(id):
-    post = Post.query.get(id)
+    post = Post.query.get_or_404(id)
 
     db.session.delete(post)
     db.session.commit()

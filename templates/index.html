@@ -1,5 +1,8 @@
-{% extends "base.html" %}
+{% extends "bootstrap/base.html" %}
+{% block title %}TOP PAGE{% endblock %}
+
 {% block content %}
+<div class="container">
     <h1>BlogAppliction</h1>
     <a href="/create" role="button">New post</a>
     <a href="/logout" role="button">Logout</a>
@@ -12,4 +15,5 @@
         <p>{{ post.body }}</p>
     </article>
     {% endfor %}
+</div>
 {% endblock %}
