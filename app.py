@@ -264,6 +264,12 @@ def contact():
 def search():
     if request.method == 'POST':
         search_query = request.form.get('search_query')
-        search_results = Post.query.filter(Post.title.contains(search_query)).all()
-        return render_template('search_results.html', posts=search_results, query=search_query)
+        category = request.form.get('category')
+        
+        if category:
+            search_results = Post.query.filter(Post.body.contains(category)).all()
+        else:
+            search_results = Post.query.filter(Post.title.contains(search_query)).all()
+        
+        return render_template('search_results.html', posts=search_results, query=search_query, category=category)
     return render_template('search.html')

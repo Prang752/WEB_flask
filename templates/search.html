@@ -19,7 +19,7 @@
                         <form method="POST" action="{{ url_for('search') }}">
                             <div class="form-group">
                                 <label for="search_query" class="form-label">Search by Title:</label>
-                                <input type="text" id="search_query" name="search_query" class="form-control" required>
+                                <input type="text" id="search_query" name="search_query" class="form-control">
                             </div>
                             <div class="form-group mt-3">
                                 <label class="form-label">Categories</label>
@@ -31,6 +31,7 @@
                                     <button type="button" class="btn btn-outline-warning mx-1" onclick="addCategory('#Lifestyle')">#Lifestyle</button>
                                 </div>
                             </div>
+                            <input type="hidden" id="category" name="category">
                             <button type="submit" class="btn btn-primary btn-block mt-3">Search</button>
                         </form>
                     </div>
@@ -44,7 +45,9 @@
     <script>
         function addCategory(category) {
             var searchField = document.getElementById('search_query');
-            searchField.value += ' ' + category;
+            var categoryField = document.getElementById('category');
+            searchField.value = category;
+            categoryField.value = category;
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
