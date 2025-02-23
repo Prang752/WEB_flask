@@ -1,0 +1,23 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    
+    <h1 class="text-center mb-4" style="font-size: 3rem; font-weight: bold; color: #333;">Daily Life Blog</h1>
+
+    <div class="d-flex justify-content-between mb-4">
+        <a href="/create" class="btn btn-primary">➕ New Post</a>
+        <a href="/profile" class="btn btn-info">👤 My Profile</a>
+        <a href="/logout" class="btn btn-danger">🚪 Logout</a>
+    </div>
+
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title">Profile of {{ user.username }}</h2>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
