@@ -19,7 +19,18 @@
                     <div class="mb-3 text-center">
                         <label for="body" class="form-label">Content</label>
                         <div class="d-flex justify-content-center">
-                            <textarea name="body" class="form-control w-100" rows="8" required></textarea>
+                            <textarea id="body" name="body" class="form-control w-100" rows="8" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <label class="form-label">Categories</label>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-outline-primary mx-1" onclick="addCategory('#Technology')">#Technology</button>
+                            <button type="button" class="btn btn-outline-secondary mx-1" onclick="addCategory('#Health')">#Health</button>
+                            <button type="button" class="btn btn-outline-success mx-1" onclick="addCategory('#Travel')">#Travel</button>
+                            <button type="button" class="btn btn-outline-danger mx-1" onclick="addCategory('#Education')">#Education</button>
+                            <button type="button" class="btn btn-outline-warning mx-1" onclick="addCategory('#Lifestyle')">#Lifestyle</button>
                         </div>
                     </div>
 
@@ -33,4 +44,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function addCategory(category) {
+        var bodyField = document.getElementById('body');
+        bodyField.value += ' ' + category;
+    }
+</script>
 {% endblock %}
