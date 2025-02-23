@@ -163,3 +163,26 @@ def update_username():
     current_user.username = new_username
     db.session.commit() 
     return redirect(url_for('profile')) 
+
+@app.route('/change-password')
+@login_required
+def change_password():
+    return render_template('change-password.html')
+
+
+@app.route('/update-password', methods=['POST'])
+@login_required
+def update_password():
+    old_password = request.form['old_password']
+    new_password = request.form['new_password']
+    confirm_password = request.form['confirm_password']
+    
+    if not check_password_hash(current_user.password, old_password):
+        return "Incorrect old password", 400
+
+    if new_password != confirm_password:
+        return "Passwords do not match", 400
+
+    current_user.password = generate_password_hash(new_password)
+    db.session.commit() 
+    return redirect(url_for('profile'))
