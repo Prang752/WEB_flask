@@ -13,16 +13,24 @@
                         <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
                     </div>
 
-                   
                     <div class="mb-3 text-center">
                         <label for="body" class="form-label">Content</label>
                         <div class="d-flex justify-content-center">
-                            <textarea name="body" class="form-control w-100" rows="8"
-                                required>{{ post.body }}</textarea>
+                            <textarea name="body" class="form-control w-100" rows="8" required>{{ post.body }}</textarea>
                         </div>
                     </div>
 
-                    
+                    <div class="mb-3 text-center">
+                        <label class="form-label">Categories</label>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-outline-primary mx-1" onclick="addCategory('#Technology')">#Technology</button>
+                            <button type="button" class="btn btn-outline-secondary mx-1" onclick="addCategory('#Health')">#Health</button>
+                            <button type="button" class="btn btn-outline-success mx-1" onclick="addCategory('#Travel')">#Travel</button>
+                            <button type="button" class="btn btn-outline-danger mx-1" onclick="addCategory('#Education')">#Education</button>
+                            <button type="button" class="btn btn-outline-warning mx-1" onclick="addCategory('#Lifestyle')">#Lifestyle</button>
+                        </div>
+                    </div>
+
                     <div class="text-center">
                         <button type="submit" class="btn btn-warning btn-lg px-4 py-2 fw-bold">Update</button>
                         <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm px-3 ms-2">Cancel</a>
@@ -32,4 +40,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    function addCategory(category) {
+        var bodyField = document.querySelector('textarea[name="body"]');
+        bodyField.value += ' ' + category;
+    }
+</script>
 {% endblock %}
