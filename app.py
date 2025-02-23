@@ -237,3 +237,23 @@ def check_old_password(old_password, username):
     if user and check_password_hash(user.password, old_password):  
         return True
     return False
+
+
+
+
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        
+        # Here you can add logic to handle the contact form submission,
+        # such as sending an email or saving the message to the database.
+        
+        flash('Thank you for your message. We will get back to you soon!', 'success')
+        return redirect(url_for('contact'))
+    
+    return render_template('contact.html')
