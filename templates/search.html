@@ -21,6 +21,16 @@
                                 <label for="search_query" class="form-label">Search by Title:</label>
                                 <input type="text" id="search_query" name="search_query" class="form-control" required>
                             </div>
+                            <div class="form-group mt-3">
+                                <label class="form-label">Categories</label>
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" class="btn btn-outline-primary mx-1" onclick="addCategory('#Technology')">#Technology</button>
+                                    <button type="button" class="btn btn-outline-secondary mx-1" onclick="addCategory('#Health')">#Health</button>
+                                    <button type="button" class="btn btn-outline-success mx-1" onclick="addCategory('#Travel')">#Travel</button>
+                                    <button type="button" class="btn btn-outline-danger mx-1" onclick="addCategory('#Education')">#Education</button>
+                                    <button type="button" class="btn btn-outline-warning mx-1" onclick="addCategory('#Lifestyle')">#Lifestyle</button>
+                                </div>
+                            </div>
                             <button type="submit" class="btn btn-primary btn-block mt-3">Search</button>
                         </form>
                     </div>
@@ -31,6 +41,12 @@
             </div>
         </div>
     </div>
+    <script>
+        function addCategory(category) {
+            var searchField = document.getElementById('search_query');
+            searchField.value += ' ' + category;
+        }
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
