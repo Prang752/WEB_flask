@@ -10,12 +10,17 @@ import os
 from datetime import datetime
 import pytz
 
+from flask_login import current_user
+from flask_migrate import Migrate
+from flask.cli import AppGroup
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
+migrate = Migrate(app, db) 
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -25,6 +30,8 @@ class Post(db.Model):
     title = db.Column(db.String(50), nullable=False)
     body = db.Column(db.String(300), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(pytz.timezone('Asia/Bangkok')))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('posts', lazy=True)) 
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -35,12 +42,13 @@ class User(UserMixin, db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id)) or None
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 @login_required
 def index():
-    if request.method == 'GET':
-        posts = Post.query.all()
-        return render_template('index.html', posts=posts)
+    posts = Post.query.filter_by(user_id=current_user.id).all()
+    return render_template('index.html', posts=posts)
+
+
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -98,13 +106,12 @@ def create():
         title = request.form.get('title')
         body = request.form.get('body')
 
-        post = Post(title=title, body=body)
-
+        post = Post(title=title, body=body, user_id=current_user.id)  # 🔥 ใช้ current_user.id
         db.session.add(post)
         db.session.commit()
         return redirect('/')
-    else:
-        return render_template('create.html')
+    return render_template('create.html')
+
 
 
 
@@ -113,22 +120,25 @@ def create():
 def update(id):
     post = Post.query.get(id)
 
-    if request.method == 'GET':
-        return render_template('update.html', post=post)
-       
-    else:
+    if post.user_id != current_user.id:  
+        return "Unauthorized", 403
+
+    if request.method == 'POST':
         post.title = request.form.get('title')
         post.body = request.form.get('body')
-
         db.session.commit()
         return redirect('/')
+    return render_template('update.html', post=post)
 
-
-@app.route('/<int:id>/delete', methods=['GET','POST'])
+@app.route('/<int:id>/delete', methods=['GET', 'POST'])
 @login_required
 def delete(id):
     post = Post.query.get_or_404(id)
 
+    if post.user_id != current_user.id:  
+        return "Unauthorized", 403
+
     db.session.delete(post)
     db.session.commit()
     return redirect('/')
+
