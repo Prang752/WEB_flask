@@ -1,16 +1,21 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}TOP PAGE{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <h1 class="text-center mb-4">Daily Life Blog</h1>
 
     <div class="d-flex justify-content-between mb-4">
-        <a href="/create" class="btn btn-primary">➕ New Post</a>
-        <a href="/profile" class="btn btn-info">👤 My Profile</a> 
-        <a href="/logout" class="btn btn-danger">🚪 Logout</a>
-        <a href="{{ url_for('search') }}" class="btn btn-secondary">🔍 Search</a>
+        <div class="d-flex align-items-center">
+            <img src="{{ url_for('static', filename='profile_pics/' + (current_user.profile_pic if current_user.profile_pic else 'default.jpg')) }}" alt="Profile Picture" class="img-thumbnail me-2" style="width: 40px; height: 40px; border-radius: 50%;">
+            <a href="/profile" class="btn btn-info me-2">👤 My Profile</a>
+            <a href="/logout" class="btn btn-danger me-2">🚪 Logout</a>
+        </div>
+        <div>
+            <a href="/create" class="btn btn-primary">➕ New Post</a>
+            <a href="{{ url_for('search') }}" class="btn btn-secondary">🔍 Search</a>
+        </div>
     </div>
 
     {% for post in posts %}

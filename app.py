@@ -15,11 +15,13 @@ from flask_migrate import Migrate
 from flask.cli import AppGroup
 from flask import flash
 from flask import flash, redirect, url_for, session, flash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
+app.config['UPLOAD_FOLDER'] = 'static/profile_pics'
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 migrate = Migrate(app, db) 
@@ -29,6 +31,10 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "signup"
 
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,6 +48,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
+    profile_pic = db.Column(db.String(255), nullable=True, default='default.jpg')  # เพิ่มฟิลด์ profile_pic
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -64,7 +71,7 @@ def signup():
 
     
         existing_user = User.query.filter_by(username=username).first()
-        if existing_user:
+        if (existing_user):
             flash('This user already exists. Please try again!', 'error')  
             return redirect('/signup') 
 
@@ -273,3 +280,27 @@ def search():
         
         return render_template('search_results.html', posts=search_results, query=search_query, category=category)
     return render_template('search.html')
+
+
+@app.route('/upload-profile-pic', methods=['POST'])
+@login_required
+def upload_profile_pic():
+    if 'profile_pic' not in request.files:
+        flash('No file part', 'danger')
+        return redirect(url_for('profile'))
+    
+    file = request.files['profile_pic']
+    if file.filename == '':
+        flash('No selected file', 'danger')
+        return redirect(url_for('profile'))
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        current_user.profile_pic = filename
+        db.session.commit()
+        flash('Profile picture updated!', 'success')
+    else:
+        flash('File type not allowed', 'danger')
+    
+    return redirect(url_for('profile'))

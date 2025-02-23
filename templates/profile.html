@@ -14,11 +14,21 @@
     </div>
 
     <div class="card mb-4 shadow-lg">
-        <div class="card-body">
+        <div class="card-body text-center">
             <h2 class="card-title">Profile of {{ user.username }}</h2>
-            <p><strong>Username:</strong> {{ user.username }}</p>
+            <div class="mb-3">
+                <img src="{{ url_for('static', filename='profile_pics/' + (user.profile_pic if user.profile_pic else 'default.jpg')) }}" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px;">
+            </div>
+            <form method="POST" action="/upload-profile-pic" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="profile_pic" class="form-label">Change Profile Picture</label>
+                    <input type="file" name="profile_pic" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
+            <p class="mt-3"><strong>Username:</strong> {{ user.username }}</p>
             <a href="/edit-username" class="btn btn-warning">✏️ Change Username</a>
-            <a href="/change-password" class="btn btn-danger">🔑 Change Password</a> <!-- New button -->
+            <a href="/change-password" class="btn btn-danger">🔑 Change Password</a>
         </div>
     </div>
 </div>
