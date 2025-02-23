@@ -14,7 +14,7 @@ from flask_login import current_user
 from flask_migrate import Migrate
 from flask.cli import AppGroup
 from flask import flash
-from flask import flash, redirect, url_for
+from flask import flash, redirect, url_for, session, flash
 
 app = Flask(__name__)
 app = Flask(__name__, template_folder='templates')
@@ -23,6 +23,7 @@ app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 migrate = Migrate(app, db) 
+app.secret_key = 'your_secret_key_here'
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -164,25 +165,75 @@ def update_username():
     db.session.commit() 
     return redirect(url_for('profile')) 
 
-@app.route('/change-password')
+
+@app.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
+    if request.method == 'POST':
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        if not check_password_hash(current_user.password, old_password):
+            flash('Old password is incorrect', 'danger')
+            return redirect(url_for('change-password'))
+
+    
+        if new_password != confirm_password:
+            flash('New password and confirmation do not match', 'danger')
+            return redirect(url_for('change-password'))
+
+    
+        current_user.password = generate_password_hash(new_password)
+        db.session.commit()
+
+        flash('Your password has been updated successfully', 'success')
+
+        login_user(current_user)  
+
+        return redirect(url_for('profile')) 
+
     return render_template('change-password.html')
 
 
-@app.route('/update-password', methods=['POST'])
+@app.route('/update-password', methods=['GET', 'POST'])
 @login_required
 def update_password():
-    old_password = request.form['old_password']
-    new_password = request.form['new_password']
-    confirm_password = request.form['confirm_password']
-    
-    if not check_password_hash(current_user.password, old_password):
-        return "Incorrect old password", 400
+    if request.method == 'POST':
+        old_password = request.form['old_password']
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
 
-    if new_password != confirm_password:
-        return "Passwords do not match", 400
+  
+        if not check_password_hash(current_user.password, old_password):
+            flash("Old password is incorrect!", "error")
+            return redirect(url_for('update_password'))  
 
-    current_user.password = generate_password_hash(new_password)
-    db.session.commit() 
-    return redirect(url_for('profile'))
+        
+        if new_password != confirm_password:
+            flash("New passwords do not match!", "error")
+            return redirect(url_for('update_password'))
+
+       
+        hashed_password = generate_password_hash(new_password)
+
+       
+        current_user.password = hashed_password
+        db.session.commit()
+
+        flash("Password updated successfully!", "success")
+        return redirect(url_for('profile')) 
+
+    return render_template('change-password.html')
+
+
+
+def get_user_by_username(username):
+    user = User.query.filter_by(username=username).first()
+    return user
+
+def check_old_password(old_password, username):
+    user = get_user_by_username(username)
+    if user and check_password_hash(user.password, old_password):  
+        return True
+    return False
