@@ -1,19 +1,29 @@
 {% extends "bootstrap/base.html" %}
+
 {% block title %}TOP PAGE{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>BlogAppliction</h1>
-    <a href="/create" role="button">New post</a>
-    <a href="/logout" role="button">Logout</a>
+<div class="container mt-4">
+    <h1 class="text-center mb-4">BlogApplication</h1>
+
+    <div class="d-flex justify-content-between mb-4">
+        <a href="/create" class="btn btn-primary">➕ New Post</a>
+        <a href="/logout" class="btn btn-danger">🚪 Logout</a>
+    </div>
+
     {% for post in posts %}
-    <article>
-        <h2>{{ post.title }}</h2>
-        <a href="/{{post.id}}/update" role="button">edit</a>
-        <a href="/{{post.id}}/delete" role="button">delete</a>
-        <p>Created date : {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
-        <p>{{ post.body }}</p>
-    </article>
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <p class="text-muted">Created date: {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p class="card-text">{{ post.body }}</p>
+            
+            <div class="d-flex justify-content-end">
+                <a href="/{{ post.id }}/update" class="btn btn-warning btn-sm me-2">✏️ Edit</a>
+                <a href="/{{ post.id }}/delete" class="btn btn-danger btn-sm">🗑️ Delete</a>
+            </div>
+        </div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
