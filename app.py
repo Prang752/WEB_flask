@@ -14,6 +14,7 @@ from flask_login import current_user
 from flask_migrate import Migrate
 from flask.cli import AppGroup
 from flask import flash
+from flask import flash, redirect, url_for
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -83,13 +84,12 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user is None or not check_password_hash(user.password, password):
-            return "Invalid username or password!", 400 
+            flash('Invalid username or password!', 'error')  
+            return redirect(url_for('login'))
 
-        # if check_password_hash(user.password, password):
         login_user(user)
         return redirect('/')
-    else:
-        return render_template('login.html')
+    return render_template('login.html')
 
 
 @app.route('/logout')
