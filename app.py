@@ -124,7 +124,7 @@ def update(id):
         return redirect('/')
 
 
-@app.route('/<int:id>/delete', methods=['POST'])
+@app.route('/<int:id>/delete', methods=['GET','POST'])
 @login_required
 def delete(id):
     post = Post.query.get_or_404(id)
