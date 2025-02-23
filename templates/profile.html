@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mt-4">
-    
+
     <h1 class="text-center mb-4" style="font-size: 3rem; font-weight: bold; color: #333;">Daily Life Blog</h1>
 
     <div class="d-flex justify-content-between mb-4">
@@ -17,6 +17,7 @@
         <div class="card-body">
             <h2 class="card-title">Profile of {{ user.username }}</h2>
             <p><strong>Username:</strong> {{ user.username }}</p>
+            <a href="/edit-username" class="btn btn-warning">✏️ Change Username</a> 
         </div>
     </div>
 </div>

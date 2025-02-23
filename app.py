@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required
+from flask_login import UserMixin, LoginManager, login_user, logout_user, login_required, current_user
 from flask_bootstrap import Bootstrap
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -17,6 +17,7 @@ from flask import flash
 from flask import flash, redirect, url_for
 
 app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SECRET_KEY'] = os.urandom(24)
 db = SQLAlchemy(app)
@@ -147,3 +148,18 @@ def delete(id):
 @login_required
 def profile():
     return render_template('profile.html', user=current_user)
+
+
+@app.route('/edit-username')
+@login_required
+def edit_username():
+    return render_template('edit-username.html')
+
+
+@app.route('/update-username', methods=['POST'])
+@login_required
+def update_username():
+    new_username = request.form['new_username']
+    current_user.username = new_username
+    db.session.commit() 
+    return redirect(url_for('profile')) 

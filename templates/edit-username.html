@@ -1,0 +1,26 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}Change Username{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4" style="font-size: 3rem; font-weight: bold; color: #333;">Change Username</h1>
+
+    <div class="d-flex justify-content-between mb-4">
+        <a href="/profile" class="btn btn-info">👤 Back to Profile</a>
+    </div>
+
+    <div class="card mb-4 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title">Update Your Username</h2>
+            <form method="POST" action="/update-username">
+                <div class="mb-3">
+                    <label for="new_username" class="form-label">New Username</label>
+                    <input type="text" class="form-control" id="new_username" name="new_username" required>
+                </div>
+                <button type="submit" class="btn btn-success">Update Username</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
