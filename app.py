@@ -13,7 +13,7 @@ import pytz
 from flask_login import current_user
 from flask_migrate import Migrate
 from flask.cli import AppGroup
-
+from flask import flash
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
@@ -57,22 +57,20 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        # user = User(username=username, password=generate_password_hash(password, method='pbkdf2:sha256', salt_length=8))
-
+    
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
-            return "Error: Username already exists!", 400 
+            flash('This user already exists. Please try again!', 'error')  
+            return redirect('/signup') 
 
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
         user = User(username=username, password=hashed_password)
-
 
         db.session.add(user)
         db.session.commit()
         return redirect('/login')
 
-    else:
-        return render_template('signup.html')
+    return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

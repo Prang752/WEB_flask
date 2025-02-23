@@ -1,11 +1,26 @@
 {% extends "base.html" %}
+
 {% block content %}
 <h1>Sign up</h1>
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="alert alert-danger">
+    {% for category, message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
 <form method="POST">
-    <label for="">username</label>
-    <input type="text" name="username">
-    <label for="">password</label>
-    <input type="password" name="password">
-    <input type="submit" value="sign up">
+    <label for="username">username</label>
+    <input type="text" name="username" required>
+
+    <label for="password">password</label>
+    <input type="password" name="password" required>
+
+    <input type="submit" value="Sign up">
 </form>
 {% endblock %}
