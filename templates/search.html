@@ -5,20 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Posts</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-4">
-        <h1 class="text-center mb-4">Search Posts</h1>
-        <form method="POST" action="{{ url_for('search') }}">
-            <div class="mb-3">
-                <label for="search_query" class="form-label">Search by Title:</label>
-                <input type="text" id="search_query" name="search_query" class="form-control" required>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2>Search Posts</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{{ url_for('search') }}">
+                            <div class="form-group">
+                                <label for="search_query" class="form-label">Search by Title:</label>
+                                <input type="text" id="search_query" name="search_query" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block mt-3">Search</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-        <div class="text-center mt-4">
-            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
