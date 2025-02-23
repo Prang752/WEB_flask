@@ -257,3 +257,13 @@ def contact():
         return redirect(url_for('contact'))
     
     return render_template('contact.html')
+
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    if request.method == 'POST':
+        search_query = request.form.get('search_query')
+        search_results = Post.query.filter(Post.title.contains(search_query)).all()
+        return render_template('search_results.html', posts=search_results, query=search_query)
+    return render_template('search.html')

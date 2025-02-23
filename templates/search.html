@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Posts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Search Posts</h1>
+        <form method="POST" action="{{ url_for('search') }}">
+            <div class="mb-3">
+                <label for="search_query" class="form-label">Search by Title:</label>
+                <input type="text" id="search_query" name="search_query" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
